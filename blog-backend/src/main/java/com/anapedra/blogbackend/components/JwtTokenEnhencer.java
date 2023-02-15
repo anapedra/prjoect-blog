@@ -12,25 +12,21 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
-public class JwtTokenEnhancer implements TokenEnhancer {
 
+@Component
+public class JwtTokenEnhencer implements TokenEnhancer {
     @Autowired
     private UserRepository userRepository;
-
     @Override
-    public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+    public OAuth2AccessToken enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {
 
-        User user = userRepository.findByEmail(authentication.getName());
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("userFirstName", user.getFirstName());
-        map.put("userId", user.getId());
-
-        DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) accessToken;
+        User user=userRepository.findByEmail(oAuth2Authentication.getName());
+        Map<String,Object> map=new HashMap<>();
+        map.put("id",user.getId());
+        map.put("name",user.getFirstName());
+        map.put("email",user.getEmail());
+        DefaultOAuth2AccessToken token= (DefaultOAuth2AccessToken) oAuth2AccessToken;
         token.setAdditionalInformation(map);
-
-        return accessToken;
+        return oAuth2AccessToken;
     }
 }
-

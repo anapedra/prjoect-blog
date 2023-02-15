@@ -1,7 +1,9 @@
 package com.anapedra.blogbackend.resources.exceptionresource;
 
 import com.anapedra.blogbackend.services.exeptuonservice.DatabaseException;
+import com.anapedra.blogbackend.services.exeptuonservice.ForbiddenException;
 import com.anapedra.blogbackend.services.exeptuonservice.ResourceNotFoundException;
+import com.anapedra.blogbackend.services.exeptuonservice.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,6 +41,7 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
@@ -55,4 +58,17 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
+
+    @ExceptionHandler(ForbiddenException.class )
+    public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request){
+        OAuthCustomError  errer=new OAuthCustomError("Forbidden", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errer);
+    }
+    @ExceptionHandler(UnauthorizedException.class )
+    public ResponseEntity<OAuthCustomError> Unauthorized(UnauthorizedException e, HttpServletRequest request){
+        OAuthCustomError  errer=new OAuthCustomError("Unauthorized", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errer);
+    }
 }
+
+

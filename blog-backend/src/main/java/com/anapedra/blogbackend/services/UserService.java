@@ -41,15 +41,19 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private AuthService authService;
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
+        authService.validateAdmin();
         Page<User> list = repository.findAll(pageable);
         return list.map(x -> new UserDTO(x));
     }
 
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
+        authService.validateSelfOrAdmin(id);
         Optional<User> obj = repository.findById(id);
         User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new UserDTO(entity);
@@ -57,6 +61,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
+       // authService.validateAdmin();
         User entity = new User();
         copyDtoToEntity(dto, entity);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -67,6 +72,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
+           // authService.validateAdmin();
             User entity = repository.getOne(id);
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
@@ -79,6 +85,7 @@ public class UserService implements UserDetailsService {
 
     public void delete(Long id) {
         try {
+            authService.validateAdmin();
             repository.deleteById(id);
         }
         catch (EmptyResultDataAccessException e) {
