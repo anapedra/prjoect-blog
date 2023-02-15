@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_reply")
-public class Repley implements Serializable {
+public class Reply implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -20,10 +20,10 @@ public class Repley implements Serializable {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-   // private List<Repley> repleys = new ArrayList<>();
+   // private List<Reply> repleys = new ArrayList<>();
 
 
-    public Repley(Long id, String title, String text, Instant dataReply, Instant dataUpdateReply, Comment comment) {
+    public Reply(Long id, String title, String text, Instant dataReply, Instant dataUpdateReply, Comment comment) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -32,7 +32,7 @@ public class Repley implements Serializable {
         this.comment = comment;
     }
 
-    public Repley() {
+    public Reply() {
 
     }
 
@@ -85,7 +85,7 @@ public class Repley implements Serializable {
     }
     @Override
     public String toString() {
-        return "Repley{" +
+        return "Reply{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
@@ -97,8 +97,8 @@ public class Repley implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Repley)) return false;
-        Repley repley = (Repley) o;
+        if (!(o instanceof Reply)) return false;
+        Reply repley = (Reply) o;
         return Objects.equals(id, repley.id);
     }
 

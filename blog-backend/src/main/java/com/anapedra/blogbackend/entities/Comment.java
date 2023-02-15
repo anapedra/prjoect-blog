@@ -23,7 +23,7 @@ public class Comment implements Serializable {
     @JoinColumn(name = "post_id")
     private Post post;
     @OneToMany(mappedBy = "comment",fetch = FetchType.EAGER)
-    private List<Repley> repleys = new ArrayList<>();
+    private List<Reply> repleys = new ArrayList<>();
 
 
     public Comment(Long id, String title, String text, Instant dataComment, Instant dataUpdateComment) {
@@ -38,7 +38,7 @@ public class Comment implements Serializable {
 
     }
 
-    public List<Repley> getRepleys() {
+    public List<Reply> getRepleys() {
         return repleys;
     }
 
