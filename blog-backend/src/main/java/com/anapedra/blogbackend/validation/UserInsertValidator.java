@@ -1,7 +1,7 @@
 package com.anapedra.blogbackend.validation;
 
 
-import com.anapedra.blogbackend.dto.UserInsertDTO;
+import com.anapedra.blogbackend.dtos.UserInsertDTO;
 import com.anapedra.blogbackend.entities.User;
 import com.anapedra.blogbackend.repositories.UserRepository;
 import com.anapedra.blogbackend.resources.exceptionresource.FieldMessage;

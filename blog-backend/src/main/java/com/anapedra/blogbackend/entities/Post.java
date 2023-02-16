@@ -1,8 +1,10 @@
 package com.anapedra.blogbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -18,8 +20,10 @@ public class Post implements Serializable {
     private User author;
     private String title;
     private String text;
-    private Instant dataPost;
-    private Instant dataUpdatePost;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataPost;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataUpdatePost;
     @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
     private List<Comment> comments=new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
@@ -28,13 +32,13 @@ public class Post implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "categoruy_id"))
     private Set<Category> categories=new HashSet<>();
 
-    public Post(Long id, User author, String title, String text, Instant dataPost, Instant dataUpdatePost) {
+
+    public Post(Long id, User author, String title, String text) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.text = text;
-        this.dataPost = dataPost;
-        this.dataUpdatePost = dataUpdatePost;
+
     }
 
     public Post() {
@@ -81,20 +85,28 @@ public class Post implements Serializable {
         this.text = text;
     }
 
-    public Instant getDataPost() {
+    public LocalDate getDataPost() {
         return dataPost;
     }
 
-    public void setDataPost(Instant dataPost) {
+    public void setDataPost(LocalDate dataPost) {
         this.dataPost = dataPost;
     }
 
-    public Instant getDataUpdatePost() {
+    public LocalDate getDataUpdatePost() {
         return dataUpdatePost;
     }
 
-    public void setDataUpdatePost(Instant dataUpdatePost) {
+    public void setDataUpdatePost(LocalDate dataUpdatePost) {
         this.dataUpdatePost = dataUpdatePost;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     @Override

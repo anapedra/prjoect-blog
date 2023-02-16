@@ -1,8 +1,13 @@
 package com.anapedra.blogbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,25 +20,46 @@ public class Reply implements Serializable {
     private Long id;
     private String title;
     private String text;
-    private Instant dataReply;
-    private Instant dataUpdateReply;
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-   // private List<Reply> repleys = new ArrayList<>();
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataReply;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataUpdateReply;
+    @OneToMany
+    private List<Reply> repleys = new ArrayList<>();
 
 
-    public Reply(Long id, String title, String text, Instant dataReply, Instant dataUpdateReply, Comment comment) {
+    public Reply(Long id, String title, String text, Comment comment) {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.dataReply = dataReply;
-        this.dataUpdateReply = dataUpdateReply;
         this.comment = comment;
+    }
+
+    public void setDataReply(LocalDate dataReply) {
+        this.dataReply = dataReply;
+    }
+
+    public void setDataUpdateReply(LocalDate dataUpdateReply) {
+        this.dataUpdateReply = dataUpdateReply;
     }
 
     public Reply() {
 
+    }
+
+    public LocalDate getDataReply() {
+        return dataReply;
+    }
+
+    public LocalDate getDataUpdateReply() {
+        return dataUpdateReply;
+    }
+
+    public List<Reply> getRepleys() {
+        return repleys;
     }
 
     public Long getId() {
@@ -60,22 +86,6 @@ public class Reply implements Serializable {
         this.text = text;
     }
 
-    public Instant getDataReply() {
-        return dataReply;
-    }
-
-    public void setDataReply(Instant dataPost) {
-        this.dataReply = dataPost;
-    }
-
-    public Instant getDataUpdateReply() {
-        return dataUpdateReply;
-    }
-
-    public void setDataUpdateReply(Instant dataUpdatePost) {
-        this.dataUpdateReply = dataUpdatePost;
-    }
-
     public Comment getComment() {
         return comment;
     }
@@ -83,27 +93,31 @@ public class Reply implements Serializable {
     public void setComment(Comment comment) {
         this.comment = comment;
     }
+
     @Override
     public String toString() {
         return "Reply{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
-                ", dataPost=" + dataReply +
-                ", dataUpdatePost=" + dataUpdateReply +
                 ", comment=" + comment +
+                ", dataReply=" + dataReply +
+                ", dataUpdateReply=" + dataUpdateReply +
+                ", repleys=" + repleys +
                 '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Reply)) return false;
-        Reply repley = (Reply) o;
-        return Objects.equals(id, repley.id);
+        Reply reply = (Reply) o;
+        return Objects.equals(getId(), reply.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 }
+

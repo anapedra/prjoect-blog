@@ -1,14 +1,13 @@
 package com.anapedra.blogbackend.resources;
 
 
-import com.anapedra.blogbackend.dto.UserDTO;
-import com.anapedra.blogbackend.dto.UserInsertDTO;
-import com.anapedra.blogbackend.dto.UserUpdateDTO;
+import com.anapedra.blogbackend.dtos.UserDTO;
+import com.anapedra.blogbackend.dtos.UserInsertDTO;
+import com.anapedra.blogbackend.dtos.UserUpdateDTO;
 import com.anapedra.blogbackend.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

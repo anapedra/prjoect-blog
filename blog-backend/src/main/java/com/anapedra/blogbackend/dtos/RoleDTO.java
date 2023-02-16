@@ -1,4 +1,4 @@
-package com.anapedra.blogbackend.dto;
+package com.anapedra.blogbackend.dtos;
 
 import com.anapedra.blogbackend.entities.Role;
 

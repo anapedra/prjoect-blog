@@ -42,6 +42,10 @@ public class Category implements Serializable {
         this.name = name;
     }
 
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
@@ -63,4 +67,6 @@ public class Category implements Serializable {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+
 }

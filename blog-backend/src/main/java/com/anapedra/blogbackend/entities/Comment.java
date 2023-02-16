@@ -1,8 +1,11 @@
 package com.anapedra.blogbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +20,10 @@ public class Comment implements Serializable {
     private Long id;
     private String title;
     private String text;
-    private Instant dataComment;
-    private Instant dataUpdateComment;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataComment;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    private LocalDate dataUpdateComment;
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
@@ -26,16 +31,39 @@ public class Comment implements Serializable {
     private List<Reply> repleys = new ArrayList<>();
 
 
-    public Comment(Long id, String title, String text, Instant dataComment, Instant dataUpdateComment) {
+    public Comment(Long id, String title, String text) {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.dataComment = dataComment;
-        this.dataUpdateComment = dataUpdateComment;
+
     }
 
     public Comment() {
 
+    }
+
+
+    public LocalDate getDataComment() {
+        return dataComment;
+    }
+
+    public LocalDate getDataUpdateComment() {
+        return dataUpdateComment;
+    }
+    public void setDataComment(LocalDate dataComment) {
+        this.dataComment = dataComment;
+    }
+
+    public void setDataUpdateComment(LocalDate dataUpdateComment) {
+        this.dataUpdateComment = dataUpdateComment;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public List<Reply> getRepleys() {
@@ -66,21 +94,7 @@ public class Comment implements Serializable {
         this.text = text;
     }
 
-    public Instant getDataComment() {
-        return dataComment;
-    }
 
-    public void setDataComment(Instant dataComment) {
-        this.dataComment = dataComment;
-    }
-
-    public Instant getDataUpdateComment() {
-        return dataUpdateComment;
-    }
-
-    public void setDataUpdateComment(Instant dataUpdateComment) {
-        this.dataUpdateComment = dataUpdateComment;
-    }
 
     @Override
     public String toString() {
@@ -88,8 +102,6 @@ public class Comment implements Serializable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
-                ", dataComment=" + dataComment +
-                ", dataUpdateComment=" + dataUpdateComment +
                 ", repleys=" + repleys +
                 '}';
     }
@@ -106,4 +118,7 @@ public class Comment implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
 }

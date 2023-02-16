@@ -1,10 +1,10 @@
 package com.anapedra.blogbackend.services;
 
 
-import com.anapedra.blogbackend.dto.RoleDTO;
-import com.anapedra.blogbackend.dto.UserDTO;
-import com.anapedra.blogbackend.dto.UserInsertDTO;
-import com.anapedra.blogbackend.dto.UserUpdateDTO;
+import com.anapedra.blogbackend.dtos.RoleDTO;
+import com.anapedra.blogbackend.dtos.UserDTO;
+import com.anapedra.blogbackend.dtos.UserInsertDTO;
+import com.anapedra.blogbackend.dtos.UserUpdateDTO;
 import com.anapedra.blogbackend.entities.Role;
 import com.anapedra.blogbackend.entities.User;
 import com.anapedra.blogbackend.repositories.UserRepository;
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -47,35 +47,35 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
         authService.validateAdmin();
-        Page<User> list = repository.findAll(pageable);
+        Page<User> list = userRepository.findAll(pageable);
         return list.map(x -> new UserDTO(x));
     }
 
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
         authService.validateSelfOrAdmin(id);
-        Optional<User> obj = repository.findById(id);
+        Optional<User> obj = userRepository.findById(id);
         User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new UserDTO(entity);
     }
 
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
-       // authService.validateAdmin();
+        authService.validateAdmin();
         User entity = new User();
         copyDtoToEntity(dto, entity);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        entity = repository.save(entity);
+        entity = userRepository.save(entity);
         return new UserDTO(entity);
     }
 
     @Transactional
     public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
-           // authService.validateAdmin();
-            User entity = repository.getOne(id);
+            authService.validateAdmin();
+            User entity = userRepository.getOne(id);
             copyDtoToEntity(dto, entity);
-            entity = repository.save(entity);
+            entity = userRepository.save(entity);
             return new UserDTO(entity);
         }
         catch (EntityNotFoundException e) {
@@ -86,7 +86,7 @@ public class UserService implements UserDetailsService {
     public void delete(Long id) {
         try {
             authService.validateAdmin();
-            repository.deleteById(id);
+            userRepository.deleteById(id);
         }
         catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Id not found " + id);
@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user=  repository.findByEmail(username);
+        User user=userRepository.findByEmail(username);
         if (user == null) {
             logger.error("User not found: " + username);
             throw new UsernameNotFoundException("Email not found");

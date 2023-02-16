@@ -13,9 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
 
-
     private final UserRepository userRepository;
-    public AuthService( UserRepository userRepository) {
+    public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -29,14 +28,17 @@ public class AuthService {
             throw new UnauthorizedException("Invalid User!");
         }
     }
-
-
-    public void validateSelfOrAdmin(Long id){
+    public void validateSelfOrAdmin(Long userId){
         User user=authenticated();
-        if (!user.getId().equals(id) && !user.hasHole( "ROLE_ADMIN")){
+        if (!user.getId().equals(userId) && !user.hasHole( "ROLE_ADMIN")){
             throw new ForbiddenException("Access denied");
         }
-
+    }
+    public void validateSelf(Long userId){
+        User user=authenticated();
+        if (!user.getId().equals(userId)){
+            throw new ForbiddenException("Access denied");
+        }
     }
     public void validateAdmin(){
         User user=authenticated();
@@ -45,12 +47,7 @@ public class AuthService {
         }
 
     }
-    public void validateSelf(Long id){
-        User user=authenticated();
-        if (!user.getId().equals(id)){
-            throw new ForbiddenException("Access denied");
-        }
-
-    }
 
 }
+
+
