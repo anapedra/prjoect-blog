@@ -61,7 +61,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
-        authService.validateAdmin();
+
         User entity = new User();
         copyDtoToEntity(dto, entity);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -72,7 +72,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
-            authService.validateAdmin();
+           // authService.validateSelfOrAdmin(id);
             User entity = userRepository.getOne(id);
             copyDtoToEntity(dto, entity);
             entity = userRepository.save(entity);
@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
 
     public void delete(Long id) {
         try {
-            authService.validateAdmin();
+           // authService.validateAdmin();
             userRepository.deleteById(id);
         }
         catch (EmptyResultDataAccessException e) {
@@ -111,7 +111,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+         authService.validateAdmin();
         User user=userRepository.findByEmail(username);
         if (user == null) {
             logger.error("User not found: " + username);

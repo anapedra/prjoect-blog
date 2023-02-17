@@ -17,12 +17,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CateroryService {
+public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final PostRepository postRepository;
     private final AuthService authService;
-    public CateroryService(CategoryRepository categoryRepository, PostRepository postRepository, AuthService authService) {
+    public CategoryService(CategoryRepository categoryRepository, PostRepository postRepository, AuthService authService) {
         this.categoryRepository = categoryRepository;
         this.postRepository = postRepository;
         this.authService = authService;
