@@ -2,6 +2,7 @@ package com.anapedra.blogbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,58 +16,43 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String title;
+    @Lob
+    private String text;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private LocalDate dataPost;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private LocalDate dataUpdatePost;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
-    private String title;
-    private String text;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
-    private LocalDate dataPost;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
-    private LocalDate dataUpdatePost;
-    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Comment> comments=new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "tb_post_category",
             joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "categoruy_id"))
-    private Set<Category> categories=new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    Set<Category> categories = new HashSet<>();
 
-
-    public Post(Long id, User author, String title, String text) {
+    public Post(Long id, String title, String text, LocalDate dataPost, LocalDate dataUpdatePost, User author) {
         this.id = id;
-        this.author = author;
         this.title = title;
         this.text = text;
-
+        this.dataPost = dataPost;
+        this.dataUpdatePost = dataUpdatePost;
+        this.author = author;
     }
 
     public Post() {
 
     }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 
     public String getTitle() {
@@ -101,23 +87,31 @@ public class Post implements Serializable {
         this.dataUpdatePost = dataUpdatePost;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
     }
 
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", author=" + author +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", dataPost=" + dataPost +
                 ", dataUpdatePost=" + dataUpdatePost +
+                ", author=" + author +
                 ", comments=" + comments +
                 ", categories=" + categories +
                 '}';
@@ -136,3 +130,4 @@ public class Post implements Serializable {
         return Objects.hash(getId());
     }
 }
+

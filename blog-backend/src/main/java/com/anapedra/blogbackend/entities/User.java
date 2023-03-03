@@ -1,6 +1,6 @@
 package com.anapedra.blogbackend.entities;
 
-
+import com.anapedra.blogbackend.entities.enuns.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,27 +22,27 @@ public class User implements UserDetails, Serializable {
     private Long id;
     private String firstName;
     private String lastName;
-
     @Column(unique = true)
     private String email;
     private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    private Integer userStatus;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "tb_user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name ="user_id"),
+            inverseJoinColumns = @JoinColumn(name ="role_id"))
     private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password) {
+    public User(Long id, String firstName, String lastName, String email, String password,UserStatus userStatus) {
         super();
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        setUserStatus(userStatus);
     }
 
     public Long getId() {
@@ -85,6 +85,16 @@ public class User implements UserDetails, Serializable {
         this.password = password;
     }
 
+    public UserStatus getUserStatus() {
+        return UserStatus.valueOf(userStatus);
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        if (userStatus != null){
+        this.userStatus = userStatus.getCode();
+        }
+    }
+
     public Set<Role> getRoles() {
         return roles;
     }
@@ -113,10 +123,6 @@ public class User implements UserDetails, Serializable {
             return false;
         return true;
     }
-
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))

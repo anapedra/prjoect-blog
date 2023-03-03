@@ -1,7 +1,12 @@
 package com.anapedra.blogbackend.entities;
 
+
+
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_role")
@@ -22,6 +27,7 @@ public class Role implements Serializable {
         this.authority = authority;
     }
 
+
     public Long getId() {
         return id;
     }
@@ -36,6 +42,14 @@ public class Role implements Serializable {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", authority='" + authority + '\'' +
+                '}';
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.anapedra.blogbackend.resources;
 
 import com.anapedra.blogbackend.dtos.CommentDTO;
 import com.anapedra.blogbackend.services.CommentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/comments")
+@CrossOrigin(origins = "*",maxAge = 3600)
 public class CommentResource {
 
     private final CommentService service;
@@ -24,6 +27,11 @@ public class CommentResource {
     public ResponseEntity<List<CommentDTO>> findAll(@RequestParam(value = "minDate",defaultValue = "") String minDate,
                                                     @RequestParam(value = "maxDate",defaultValue = "") String maxDate) {
         List<CommentDTO> list = service.findAllPaged(minDate,maxDate);
+        return ResponseEntity.ok().body(list);
+    }
+    @GetMapping(value = "/authors")
+    public ResponseEntity<Page<CommentDTO>> findPostsByAuthor(@RequestParam(value = "authorId",defaultValue = "0") Long authorId, Pageable pageable) {
+        Page<CommentDTO> list = service.findAllByAuthor(authorId,pageable);
         return ResponseEntity.ok().body(list);
     }
 

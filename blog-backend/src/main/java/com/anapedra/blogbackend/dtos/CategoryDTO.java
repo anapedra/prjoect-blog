@@ -3,16 +3,21 @@ package com.anapedra.blogbackend.dtos;
 import com.anapedra.blogbackend.entities.Category;
 import com.anapedra.blogbackend.entities.Post;
 
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 public class CategoryDTO implements Serializable {
     private static final long serialVersionUID=1L;
     private Long id;
+    @NotBlank(message = "Campo obrigatório!")
     private String name;
-    private Set<PostDTO> posts = new HashSet<>();
+    private List<PostDTO>posts=new ArrayList<>();
+
 
     public CategoryDTO() {
     }
@@ -24,16 +29,19 @@ public class CategoryDTO implements Serializable {
     public CategoryDTO(Category entity) {
         id=entity.getId();
         name= entity.getName();
-       entity.getPosts().forEach(post -> this.posts.add(new PostDTO(post)));
-    }
 
-    public CategoryDTO(Category entity, Set<Post> posts) {
+    }
+    public CategoryDTO(Category entity,Set<Post>list) {
         this(entity);
-        posts.forEach(post -> this.posts.add(new PostDTO(post)));
+        list.forEach(post ->this.posts.add(new PostDTO(post)) );
     }
 
-    public Set<PostDTO> getPosts() {
+    public List<PostDTO> getPosts() {
         return posts;
+    }
+
+    public void setPosts(List<PostDTO> posts) {
+        this.posts = posts;
     }
 
     public Long getId() {
@@ -57,7 +65,6 @@ public class CategoryDTO implements Serializable {
         return "CategoryDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", posts=" + posts +
                 '}';
     }
 

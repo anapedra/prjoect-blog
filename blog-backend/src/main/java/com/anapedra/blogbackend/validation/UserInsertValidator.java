@@ -5,6 +5,7 @@ import com.anapedra.blogbackend.dtos.UserInsertDTO;
 import com.anapedra.blogbackend.entities.User;
 import com.anapedra.blogbackend.repositories.UserRepository;
 import com.anapedra.blogbackend.resources.exceptionresource.FieldMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;

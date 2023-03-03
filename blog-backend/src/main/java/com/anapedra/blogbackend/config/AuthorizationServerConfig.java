@@ -23,6 +23,7 @@ import java.util.Arrays;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAdapter {
 
+
     @Value("${security.oauth2.client.client-id}")
     private String clientId;
     @Value("${security.oauth2.client.client-secret}")
@@ -61,6 +62,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
                 .refreshTokenValiditySeconds(jwtDuration);
 
     }
+
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {

@@ -1,18 +1,36 @@
 package com.anapedra.blogbackend.resources;
 
+import com.anapedra.blogbackend.dtos.ReplyDTO;
+import com.anapedra.blogbackend.services.ReplyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/replies")
-public class ReplyController {
+@CrossOrigin(origins = "*",maxAge = 3600)
+public class ReplyResource {
 
     private final ReplyService service;
-    public ReplyController(ReplyService service) {
+    public ReplyResource(ReplyService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<ReplyDTO>> findAll(  @RequestParam(value = "minDate",defaultValue = "") String minDate,
-                                                    @RequestParam(value = "maxDate",defaultValue = "") String maxDate) {
+    public ResponseEntity<List<ReplyDTO>> findAll(@RequestParam(value = "minDate",defaultValue = "") String minDate,
+                                                  @RequestParam(value = "maxDate",defaultValue = "") String maxDate) {
         List<ReplyDTO> list = service.findAll(minDate,maxDate);
+        return ResponseEntity.ok().body(list);
+    }
+    @GetMapping(value = "/authors")
+    public ResponseEntity<Page<ReplyDTO>> findPostsByAuthor(@RequestParam(value = "authorId",defaultValue = "0") Long authorId, Pageable pageable) {
+        Page<ReplyDTO> list = service.findAllByAuthor(authorId,pageable);
         return ResponseEntity.ok().body(list);
     }
 

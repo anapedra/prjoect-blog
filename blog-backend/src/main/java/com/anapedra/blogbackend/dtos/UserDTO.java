@@ -2,6 +2,8 @@ package com.anapedra.blogbackend.dtos;
 
 
 import com.anapedra.blogbackend.entities.User;
+import com.anapedra.blogbackend.entities.enuns.UserStatus;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -13,24 +15,26 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
     @NotBlank(message = "Campo obrigatório")
     private String firstName;
+    @NotBlank(message = "Campo obrigatório")
     private String lastName;
-
-    @Email(message = "Favor entrar um email válido")
+    @Email(message = "Email obrigatório")
     private String email;
-
+    private UserStatus userStatus;
     Set<RoleDTO> roles = new HashSet<>();
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String firstName, String lastName, String email) {
+    public UserDTO(Long id, String firstName, String lastName, String email,UserStatus userStatus) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.userStatus=userStatus;
+
+
     }
 
     public UserDTO(User entity) {
@@ -38,7 +42,23 @@ public class UserDTO implements Serializable {
         firstName = entity.getFirstName();
         lastName = entity.getLastName();
         email = entity.getEmail();
+        userStatus=entity.getUserStatus();
+
         entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
+    }
+
+    public UserDTO(Long id, String firstName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+    }
+
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public Long getId() {
@@ -72,6 +92,8 @@ public class UserDTO implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 
     public Set<RoleDTO> getRoles() {
         return roles;

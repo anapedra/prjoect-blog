@@ -2,41 +2,58 @@ package com.anapedra.blogbackend.dtos;
 
 import com.anapedra.blogbackend.entities.Reply;
 
+
 import javax.persistence.Lob;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.*;
 
-public class ReplyDTO {
-
+public class ReplyDTO implements Serializable {
+    private static final long serialVersionUID=1L;
     private Long id;
-    @Lob
-    @Size(min = 1000, max = 5000, message = "O texto prescisa ter no minimo 1000 caracteres e no maximo 5000")
     private String text;
-    private List<ReplyDTO>replies=new ArrayList<>();
+    private LocalDate dataReply;
+    private LocalDate dataUpdateReply;
+  //  @NotBlank(message = "Campo obrigatório!")
+    private UserAuthorDTO author;
+    private final Set<ReplyDTO> replies=new HashSet<>();
 
     public ReplyDTO() {
     }
 
-    public ReplyDTO(Long id, String text) {
+    public ReplyDTO(Long id, String text, LocalDate dataReply, LocalDate dataUpdateReply,UserAuthorDTO author) {
         this.id = id;
         this.text = text;
+        this.dataReply = dataReply;
+        this.dataUpdateReply = dataUpdateReply;
+        this.author = author;
 
     }
 
     public ReplyDTO(Reply entity) {
         id= entity.getId();
         text= entity.getText();
+        dataReply=entity.getDataReply();
+        dataUpdateReply=entity.getDataUpdateReply();
+        author=new UserAuthorDTO(entity.getAuthor().getId(),entity.getAuthor().getFirstName(),entity.getAuthor().getEmail());
         entity.getRepleys().forEach(reply -> this.replies.add(new ReplyDTO(reply)));
     }
 
-    public List<ReplyDTO> getReplies() {
+    public Set<ReplyDTO> getReplies() {
         return replies;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public UserAuthorDTO getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserAuthorDTO author) {
+        this.author = author;
     }
 
     public void setId(Long id) {
@@ -51,11 +68,30 @@ public class ReplyDTO {
         this.text = text;
     }
 
+    public LocalDate getDataReply() {
+        return dataReply;
+    }
+
+    public void setDataReply(LocalDate dataReply) {
+        this.dataReply = dataReply;
+    }
+
+    public LocalDate getDataUpdateReply() {
+        return dataUpdateReply;
+    }
+
+    public void setDataUpdateReply(LocalDate dataUpdateReply) {
+        this.dataUpdateReply = dataUpdateReply;
+    }
+
     @Override
     public String toString() {
         return "ReplyDTO{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
+                ", dataReply=" + dataReply +
+                ", dataUpdateReply=" + dataUpdateReply +
+                ", author=" + author +
                 ", replies=" + replies +
                 '}';
     }

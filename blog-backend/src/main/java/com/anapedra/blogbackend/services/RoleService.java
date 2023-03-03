@@ -7,9 +7,9 @@ import com.anapedra.blogbackend.services.exeptuonservice.DatabaseException;
 import com.anapedra.blogbackend.services.exeptuonservice.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -20,17 +20,21 @@ import java.util.stream.Collectors;
 public class RoleService {
 
     private final RoleRepository repository;
-    public RoleService(RoleRepository repository) {
+    private final AuthService authService;
+    public RoleService(RoleRepository repository, AuthService authService) {
         this.repository = repository;
+        this.authService = authService;
     }
 
     @Transactional(readOnly = true)
     public List<RoleDTO> findAll() {
-        List<Role> list = repository.findAll(Sort.by("name"));
-        return list.stream().map(x -> new RoleDTO(x)).collect(Collectors.toList());
+        authService.validateAdmin();
+        List<Role> list = repository.findAll();//Sort.by("name")
+        return list.stream().map(RoleDTO::new).collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
     public RoleDTO findById(Long id){
+        authService.validateAdmin();
         Optional<Role> obj=repository.findById(id);
         Role entity=obj.orElseThrow(
                 ()-> new ResourceNotFoundException("Id "+id+" not found"));
@@ -38,6 +42,7 @@ public class RoleService {
     }
     @Transactional
     public RoleDTO save(RoleDTO dto) {
+        authService.validateAdmin();
         var role=new Role();
         role.setAuthority(dto.getAuthority());
         role=repository.save(role);
@@ -46,6 +51,7 @@ public class RoleService {
     @Transactional
     public RoleDTO upDate(Long id, RoleDTO dto){
         try {
+            authService.validateAdmin();
             var role = repository.getOne(id);
             role.setAuthority(dto.getAuthority());
             role=repository.save(role);
@@ -60,6 +66,7 @@ public class RoleService {
     public void delet(Long id){
 
         try {
+            authService.validateAdmin();
             repository.deleteById(id);
         }
         catch (EmptyResultDataAccessException e){

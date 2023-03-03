@@ -5,7 +5,9 @@ import com.anapedra.blogbackend.entities.Post;
 import com.anapedra.blogbackend.entities.Reply;
 
 import javax.persistence.Lob;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,28 +15,34 @@ import java.util.Objects;
 public class CommentDTO implements Serializable {
     private static final long serialVersionUID=1L;
     private Long id;
-    @Lob
+    @NotBlank(message = "Campo obrigatório!")
     private String text;
+    private LocalDate dataComment;
+    private LocalDate dataUpdateComment;
+  //  @NotBlank(message = "Campo obrigatório!")
+    private UserAuthorDTO author;
     private List<ReplyDTO> replies=new ArrayList<>();
-    private PostDTO post;
-
 
 
     public CommentDTO(){
 
     }
 
-    public CommentDTO(Long id, String text, PostDTO post) {
+    public CommentDTO(Long id, String text, LocalDate dataComment, LocalDate dataUpdateComment,UserAuthorDTO author) {
         this.id = id;
         this.text = text;
-        this.post = post;
+        this.dataComment = dataComment;
+        this.dataUpdateComment = dataUpdateComment;
+        this.author = author;
     }
 
     public CommentDTO(Comment entity) {
         id =entity.getId();
         text = entity.getText();
-        post=new PostDTO(new Post());
-        entity.getRepleys().forEach(reply -> this.replies.add(new ReplyDTO(reply)));
+        dataComment = entity.getDataComment();
+        dataUpdateComment = entity.getDataUpdateComment();
+        author=new UserAuthorDTO(entity.getAuthor().getId(),entity.getAuthor().getFirstName(),entity.getAuthor().getEmail());
+
     }
 
     public CommentDTO(Comment entity, List<Reply> replies) {
@@ -42,15 +50,17 @@ public class CommentDTO implements Serializable {
         replies.forEach(r -> this.replies.add(new ReplyDTO(r)));
     }
 
-    public PostDTO getPost() {
-        return post;
-    }
-    public void setPost(PostDTO post) {
-        this.post = post;
-    }
-
     public List<ReplyDTO> getReplies() {
         return replies;
+    }
+
+
+    public UserAuthorDTO getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserAuthorDTO author) {
+        this.author = author;
     }
 
     public Long getId() {
@@ -69,30 +79,44 @@ public class CommentDTO implements Serializable {
         this.text = text;
     }
 
+    public LocalDate getDataComment() {
+        return dataComment;
+    }
 
-    @Override
-    public String toString() {
-        return "CommentDTO{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", replies=" + replies +
-                '}';
+    public void setDataComment(LocalDate dataComment) {
+        this.dataComment = dataComment;
+    }
+
+    public LocalDate getDataUpdateComment() {
+        return dataUpdateComment;
+    }
+
+    public void setDataUpdateComment(LocalDate dataUpdateComment) {
+        this.dataUpdateComment = dataUpdateComment;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CommentDTO)) return false;
-        CommentDTO that = (CommentDTO) o;
-        return Objects.equals(id, that.id);
+        CommentDTO dto = (CommentDTO) o;
+        return Objects.equals(getId(), dto.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
-
+    @Override
+    public String toString() {
+        return "CommentDTO{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", dataComment=" + dataComment +
+                ", dataUpdateComment=" + dataUpdateComment +
+                ", author=" + author +
+                ", replies=" + replies +
+                '}';
+    }
 }
-
-

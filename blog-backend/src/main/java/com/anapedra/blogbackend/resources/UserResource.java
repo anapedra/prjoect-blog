@@ -1,6 +1,7 @@
 package com.anapedra.blogbackend.resources;
 
 
+import com.anapedra.blogbackend.dtos.PostDTO;
 import com.anapedra.blogbackend.dtos.UserDTO;
 import com.anapedra.blogbackend.dtos.UserInsertDTO;
 import com.anapedra.blogbackend.dtos.UserUpdateDTO;
@@ -23,7 +24,7 @@ public class UserResource {
     public UserResource(UserService service) {
         this.service = service;
     }
-  //  @PreAuthorize("hasAnyRole('MEMBER')")
+
     @GetMapping
     public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
         Page<UserDTO> list = service.findAllPaged(pageable);
@@ -34,6 +35,11 @@ public class UserResource {
     public ResponseEntity<UserDTO> findById(@PathVariable("id") Long id) {
         UserDTO dto = service.findById(id);
         return ResponseEntity.ok().body(dto);
+    }
+    @GetMapping(value = "/roles")
+    public ResponseEntity<Page<UserDTO>> findPostsByCategory(@RequestParam(value = "roleId",defaultValue = "0") Long roleId, Pageable pageable) {
+        Page<UserDTO> list = service.findAllByRole(roleId,pageable);
+        return ResponseEntity.ok().body(list);
     }
 
     @PostMapping

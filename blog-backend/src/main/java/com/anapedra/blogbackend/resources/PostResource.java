@@ -13,7 +13,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/posts")
-//@CrossOrigin(origins = "*",maxAge = 3600)//PARA ACESSAR DE QUALQUER ORIGEN
+@CrossOrigin(origins = "*",maxAge = 3600)
 public class PostResource {
 
     private final PostService service;
@@ -30,6 +30,16 @@ public class PostResource {
         return ResponseEntity.ok().body(list);
     }
 
+    @GetMapping(value = "/categories")
+    public ResponseEntity<Page<PostDTO>> findPostsByCategory(@RequestParam(value = "categoryId",defaultValue = "0") Long categoryId,Pageable pageable) {
+        Page<PostDTO> list = service.findAllByCategory(categoryId,pageable);
+        return ResponseEntity.ok().body(list);
+    }
+    @GetMapping(value = "/authors")
+    public ResponseEntity<Page<PostDTO>> findPostsByAuthor(@RequestParam(value = "authorId",defaultValue = "0") Long authorId, Pageable pageable) {
+        Page<PostDTO> list = service.findAllByAuthor(authorId,pageable);
+        return ResponseEntity.ok().body(list);
+    }
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostDTO> findById(@PathVariable Long id) {
         PostDTO dto = service.findById(id);

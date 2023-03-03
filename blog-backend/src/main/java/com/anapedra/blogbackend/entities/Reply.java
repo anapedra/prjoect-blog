@@ -2,6 +2,8 @@ package com.anapedra.blogbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
@@ -18,8 +20,11 @@ public class Reply implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
+    @Lob
     private String text;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User author;
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
@@ -27,35 +32,20 @@ public class Reply implements Serializable {
     private LocalDate dataReply;
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
     private LocalDate dataUpdateReply;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Reply> repleys = new ArrayList<>();
 
-
-    public Reply(Long id, String title, String text, Comment comment) {
+    public Reply(Long id, String text, User author, Comment comment, LocalDate dataReply, LocalDate dataUpdateReply) {
         this.id = id;
-        this.title = title;
         this.text = text;
+        this.author = author;
         this.comment = comment;
-    }
-
-    public void setDataReply(LocalDate dataReply) {
         this.dataReply = dataReply;
-    }
-
-    public void setDataUpdateReply(LocalDate dataUpdateReply) {
         this.dataUpdateReply = dataUpdateReply;
     }
 
     public Reply() {
 
-    }
-
-    public LocalDate getDataReply() {
-        return dataReply;
-    }
-
-    public LocalDate getDataUpdateReply() {
-        return dataUpdateReply;
     }
 
     public List<Reply> getRepleys() {
@@ -70,20 +60,20 @@ public class Reply implements Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Comment getComment() {
@@ -94,17 +84,20 @@ public class Reply implements Serializable {
         this.comment = comment;
     }
 
-    @Override
-    public String toString() {
-        return "Reply{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", text='" + text + '\'' +
-                ", comment=" + comment +
-                ", dataReply=" + dataReply +
-                ", dataUpdateReply=" + dataUpdateReply +
-                ", repleys=" + repleys +
-                '}';
+    public LocalDate getDataReply() {
+        return dataReply;
+    }
+
+    public void setDataReply(LocalDate dataReply) {
+        this.dataReply = dataReply;
+    }
+
+    public LocalDate getDataUpdateReply() {
+        return dataUpdateReply;
+    }
+
+    public void setDataUpdateReply(LocalDate dataUpdateReply) {
+        this.dataUpdateReply = dataUpdateReply;
     }
 
     @Override
@@ -112,12 +105,30 @@ public class Reply implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Reply)) return false;
         Reply reply = (Reply) o;
-        return Objects.equals(getId(), reply.getId());
+        return Objects.equals(id, reply.id) && Objects.equals(author, reply.author);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id, author);
     }
+
+
+    @Override
+    public String toString() {
+        return "Reply{" +
+                "id=" + id +
+                ", author=" + author +
+                ", comment=" + comment +
+                ", dataReply=" + dataReply +
+                ", dataUpdateReply=" + dataUpdateReply +
+                ", repleys=" + repleys +
+                '}';
+    }
+
+
 }
+
+
+
 

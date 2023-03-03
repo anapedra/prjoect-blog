@@ -1,5 +1,10 @@
 package com.anapedra.blogbackend.entities;
 
+
+
+
+
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,7 +19,7 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "categories",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "categories",cascade = CascadeType.ALL)
     private Set<Post> posts = new HashSet<>();
 
     public Category(Long id, String name) {

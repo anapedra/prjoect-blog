@@ -5,16 +5,18 @@ import com.anapedra.blogbackend.dtos.RoleDTO;
 import com.anapedra.blogbackend.services.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/roles")
-public class RoleController {
+public class RoleResource {
 
     private final RoleService service;
-    public RoleController(RoleService service) {
+    public RoleResource(RoleService service) {
         this.service = service;
     }
 
@@ -49,3 +51,4 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 }
+
